@@ -279,3 +279,11 @@ node_modules/toidentifier/LICENSE
 node_modules/type-check/LICENSE
 node_modules/v8-compile-cache/LICENSE
 node_modules/word-wrap/LICENSE
+node_modules/on-headers/LICENSE
+node_modules/basic-auth/LICENSE
+node_modules/morgan/LICENSE
+node_modules/morgan/node_modules/debug/.eslintrc
+node_modules/morgan/node_modules/debug/.npmignore
+node_modules/morgan/node_modules/debug/LICENSE
+node_modules/morgan/node_modules/debug/Makefile
+node_modules/morgan/node_modules/depd/LICENSE
