@@ -6,7 +6,11 @@
     <title>myFlix</title>
     <!-- To optimise your website for mobile phones and tablets -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <style>
+      th,td{
+            padding:15px;
+            text-align: left;}
+    </style>
   </head>
 
   <body>
@@ -26,7 +30,7 @@
             movies, directors, and genres. Users will be able to sign up, update their
             personal information, and create a list of their favorite movies.</p>
 
-            <h2>Essential Features</h2>
+        <h2>Essential Features</h2>
             <ul>
                 <li>Return a list of ALL movies to the user</li>
                 <li>Return data (description, genre, director, image URL, whether it’s featured or not) about a
@@ -40,6 +44,84 @@
                 <li>Allow existing users to deregister</li>
             </ul>
 
+        <h2>URL endpoints and methods</h2>
+
+        <table style="width:100%">
+          <tr>
+            <th>Request</th>
+            <th>URL</th>
+            <th>HTTP Method</th>
+            <th>Request body data format</th>
+            <th>Response body data format</th>
+          </tr>
+          <tr>
+            <td>Return a list of ALL movies to the user</td>
+            <td>/movies</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about all the movies</td>
+          </tr>
+          <tr>
+            <td>Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by title to the user</td>
+            <td>/movies/:name</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about the movie.     
+              Example:
+              {title: 'Lord of the Rings',
+              studio: 'New Line Cinema'}</td>
+          </tr>
+          <tr>
+            <td>Return data about a genre</td>
+            <td>/genres</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about all genres.</td>
+          </tr>
+          <tr>
+            <td>Return data about a director</td>
+            <td>/directors</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about all directors.</td>
+          </tr>
+          <tr>
+            <td>Allow new users to register</td>
+            <td>/users</td>
+            <td>POST</td>
+            <td>A JSON object holding user data</td>
+            <td>A JSON object holding the registered user data</td>
+          </tr>
+          <tr>
+            <td>Allow users to update their user info (username)</td>
+            <td>/users/:username</td>
+            <td>PUT</td>
+            <td>A JSON object holding user data</td>
+            <td>A JSON object holding the registered user data</td>
+          </tr>
+          <tr>
+            <td>Allow users to add a movie to their list of favorites </td>
+            <td>/users/:username/favourites</td>
+            <td>POST</td>
+            <td>A JSON object holding movie name</td>
+            <td>A text message that a movie has been added</td>
+          </tr>
+          <tr>
+            <td>Allow users to remove a movie from their list of favorites</td>
+            <td>/users/:username/favourites/:movie</td>
+            <td>DELETE</td>
+            <td>None</td>
+            <td>A text message indicating movie was successfully removed</td>
+          </tr>
+          <tr>
+            <td>Allow existing users to deregister</td>
+            <td>/users/:username</td>
+            <td>DELETE</td>
+            <td>None</td>
+            <td>A text message indicating the user was successfully removed</td>
+          </tr>
+        
+        </table>
 
     </main>
 
