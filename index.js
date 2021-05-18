@@ -10,11 +10,16 @@ const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+/*Below is mongoose connection to the local DB
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });*/
 
 app.use(bodyParser.json());
-/* app.use(cors());- this would allow access for all domains*/
-//Here we allos only 2 origins to get access to the API
+//the code below allow access for all domains
+app.use(cors()); 
+
+/*Here we allow only 2 origins to get access to the API
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 
 app.use(cors({
@@ -26,7 +31,7 @@ app.use(cors({
     }
     return callback(null, true);
   }
-}));
+}));*/
 
 let auth = require('./auth')(app);
 const passport = require('passport');
