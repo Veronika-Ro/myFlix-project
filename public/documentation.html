@@ -59,63 +59,114 @@
             <td>/movies</td>
             <td>GET</td>
             <td>None</td>
-            <td>A JSON object holding data about all the movies</td>
+            <td>A JSON object holding data about all the movies.
+              Data expected in the following format:
+              {Title: {type: String, required: true},
+                Description: {type: String, required: true},
+                Genre: {
+                    Name: String,
+                    Description: String
+                },
+                Director: {
+                    Name: String,
+                    Bio: String
+                },
+                Actors: [String],
+                ImagePath: String,
+                Featured: Boolean}
+            </td>
           </tr>
           <tr>
             <td>Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by title to the user</td>
-            <td>/movies/:name</td>
+            <td>/movies/:Title</td>
             <td>GET</td>
             <td>None</td>
             <td>A JSON object holding data about the movie.     
-              Example:
-              {title: 'Lord of the Rings',
-              studio: 'New Line Cinema'}</td>
+              Data expected in the following format:
+              {Title: {type: String, required: true},
+                Description: {type: String, required: true},
+                Genre: {
+                    Name: String,
+                    Description: String
+                },
+                Director: {
+                    Name: String,
+                    Bio: String
+                },
+                Actors: [String],
+                ImagePath: String,
+                Featured: Boolean}</td>
           </tr>
           <tr>
             <td>Return data about a genre</td>
-            <td>/genres</td>
+            <td>/movies/genre/:Name</td>
             <td>GET</td>
             <td>None</td>
-            <td>A JSON object holding data about all genres.</td>
+            <td>A JSON object holding data about a genre.</td>
           </tr>
           <tr>
             <td>Return data about a director</td>
-            <td>/directors</td>
+            <td>/movies/director/:Name</td>
             <td>GET</td>
             <td>None</td>
-            <td>A JSON object holding data about all directors.</td>
+            <td>A JSON object holding data about a director.</td>
+          </tr>
+          <tr>
+            <td>Return data about users</td>
+            <td>/users</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about all users.</td>
           </tr>
           <tr>
             <td>Allow new users to register</td>
             <td>/users</td>
             <td>POST</td>
             <td>A JSON object holding user data</td>
-            <td>A JSON object holding the registered user data</td>
+            <td>A JSON object holding the registered user data.
+              Example: 
+              {Username: 'String',
+                (required)
+                Password: 'String',
+                (required)
+                Email: 'String',
+                (required)
+                Birthday: 'Date'}
+            </td>
           </tr>
           <tr>
             <td>Allow users to update their user info (username)</td>
-            <td>/users/:username</td>
+            <td>/users/:UserName</td>
             <td>PUT</td>
             <td>A JSON object holding user data</td>
-            <td>A JSON object holding the registered user data</td>
+            <td>A JSON object holding the registered user data
+              Example: 
+              {Username: 'String',
+                (required)
+                Password: 'String',
+                (required)
+                Email: 'String',
+                (required)
+                Birthday: 'Date'}
+            </td>
           </tr>
           <tr>
             <td>Allow users to add a movie to their list of favorites </td>
-            <td>/users/:username/favourites</td>
+            <td>/users/:UserName/movie/:ID</td>
             <td>POST</td>
             <td>A JSON object holding movie name</td>
             <td>A text message that a movie has been added</td>
           </tr>
           <tr>
             <td>Allow users to remove a movie from their list of favorites</td>
-            <td>/users/:username/favourites/:movie</td>
+            <td>/users/:UserName/movie/:ID</td>
             <td>DELETE</td>
             <td>None</td>
             <td>A text message indicating movie was successfully removed</td>
           </tr>
           <tr>
             <td>Allow existing users to deregister</td>
-            <td>/users/:username</td>
+            <td>/users/:UserName</td>
             <td>DELETE</td>
             <td>None</td>
             <td>A text message indicating the user was successfully removed</td>
