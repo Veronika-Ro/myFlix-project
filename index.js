@@ -17,7 +17,7 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, 
 
 app.use(bodyParser.json());
 //the code below allow access for all domains
-app.use(cors()); 
+app.use(cors());
 
 /*Here we allow only 2 origins to get access to the API
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
@@ -38,86 +38,86 @@ const passport = require('passport');
 require('./passport');
 
 let movies = [
-    {
-        name: 'Harry Potter and the Philosopher\'s Stone',
-        studio: 'Warner Brothers'
-    },
-    {
-        name: 'Lord of the Rings',
-        studio: 'New Line Cinema'
-    },
-    {
-        name:'Frozen',
-        studio: 'Disney'
-    },
-    {
-        name: 'Star Wars',
-        studio: 'Lucas Films'
-    },
-    {
-        name: 'Avengers',
-        studio: 'Marvel'
-    }
-  ];
-  
-  // GET requests for all movies
-  app.get('/', (req, res) => {
-    res.send('Welcome to the best Movie Collection!');
-  });
-  
-  app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Movies.find()
-      .then((movies) => {
-        res.status(200).json(movies);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
-  });
+  {
+    name: 'Harry Potter and the Philosopher\'s Stone',
+    studio: 'Warner Brothers'
+  },
+  {
+    name: 'Lord of the Rings',
+    studio: 'New Line Cinema'
+  },
+  {
+    name: 'Frozen',
+    studio: 'Disney'
+  },
+  {
+    name: 'Star Wars',
+    studio: 'Lucas Films'
+  },
+  {
+    name: 'Avengers',
+    studio: 'Marvel'
+  }
+];
 
-  // GET requests for a specific movie
-  app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Movies.findOne({ Title: req.params.Title })
-      .then((movie) => {
-        res.json(movie);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
-  });
+// GET requests for all movies
+app.get('/', (req, res) => {
+  res.send('Welcome to the best Movie Collection!');
+});
 
-   // GET requests for all users
+app.get('/movies', function (req, res) {
+  Movies.find()
+    .then((movies) => {
+      res.status(200).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
-   app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Users.find()
-      .then((users) => {
-        res.status(200).json(users);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
-  });
+// GET requests for a specific movie
+app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Movies.findOne({ Title: req.params.Title })
+    .then((movie) => {
+      res.json(movie);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
-   //Get request for a single user by username
+// GET requests for all users
 
-   app.get('/users/:UserName', passport.authenticate('jwt', { session: false }),  (req, res) => {
-    Users.findOne({ UserName: req.params.UserName })
-      .then((user) => {
-        res.json(user);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
-  });
+app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Users.find()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
-  // GET requests for a genre
+//Get request for a single user by username
 
-  app.get('/movies/genre/:Name', passport.authenticate('jwt', { session: false }),  (req, res) => {
-    Movies.findOne({ 'Genre.Name': req.params.Name })
+app.get('/users/:UserName', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Users.findOne({ UserName: req.params.UserName })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// GET requests for a genre
+
+app.get('/movies/genre/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Movies.findOne({ 'Genre.Name': req.params.Name })
     .then((movie) => {
       res.json(movie.Genre);
     })
@@ -127,10 +127,10 @@ let movies = [
     });
 });
 
-  // GET requests for a director
+// GET requests for a director
 
-  app.get('/movies/director/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Movies.findOne({ 'Director.Name': req.params.Name })
+app.get('/movies/director/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Movies.findOne({ 'Director.Name': req.params.Name })
     .then((movie) => {
       res.json(movie.Director);
     })
@@ -139,10 +139,10 @@ let movies = [
       res.status(500).send('Error: ' + err);
     });
 });
- 
-  // POST requests 
 
-  //Add a user
+// POST requests 
+
+//Add a user
 /* We’ll expect JSON in this format
 {
   ID: Integer,
@@ -158,13 +158,13 @@ app.post('/users',
   //or use .isLength({min: 5}) which means
   //minimum value of 5 characters are only allowed
   [
-    check('UserName', 'Username is required').isLength({min: 5}),
+    check('UserName', 'Username is required').isLength({ min: 5 }),
     check('UserName', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail()
   ], (req, res) => {
 
-  // check the validation object for errors
+    // check the validation object for errors
     let errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -210,25 +210,26 @@ app.post('/users',
   Birthday: Date
 }*/
 
-  app.put('/users/:UserName', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Users.findOneAndUpdate({ UserName: req.params.UserName }, { $set:
-      {
-        UserName: req.body.UserName,
-        Password: req.body.Password,
-        Email: req.body.Email,
-        Birthday: req.body.Birthday
-      }
-    },
+app.put('/users/:UserName', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Users.findOneAndUpdate({ UserName: req.params.UserName }, {
+    $set:
+    {
+      UserName: req.body.UserName,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
     { new: true }, // This line makes sure that the updated document is returned
     (err, updatedUser) => {
-      if(err) {
+      if (err) {
         console.error(err);
         res.status(500).send('Error: ' + err);
       } else {
         res.json(updatedUser);
       }
     });
-  });
+});
 
 // DELETE a user by username 
 app.delete('/users/:UserName', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -246,26 +247,26 @@ app.delete('/users/:UserName', passport.authenticate('jwt', { session: false }),
     });
 });
 
-  //Return the documentation html
+//Return the documentation html
 
-  app.use(express.static('public'));
-  app.get('/documentation', (req, res) => {
-	res.sendFile('public/documentation.html', {root: __dirname});
-  });
-  
-  //log requests at terminal
+app.use(express.static('public'));
+app.get('/documentation', (req, res) => {
+  res.sendFile('public/documentation.html', { root: __dirname });
+});
 
-  app.use(morgan('common'));
- 
-  //error handling
+//log requests at terminal
 
-  app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-  });
+app.use(morgan('common'));
 
-  // listen for requests- Now that people other than you will be using your app, you need to allow this port to change if necessary.
-  const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
+//error handling
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// listen for requests- Now that people other than you will be using your app, you need to allow this port to change if necessary.
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on Port ' + port);
 });
