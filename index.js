@@ -21,7 +21,6 @@ app.use(cors());
 
 /*Here we allow only 2 origins to get access to the API
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
-
 app.use(cors({
   origin: (origin, callback) => {
     if(!origin) return callback(null, true);
