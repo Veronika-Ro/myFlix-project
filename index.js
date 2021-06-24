@@ -246,6 +246,38 @@ app.delete('/users/:UserName', passport.authenticate('jwt', { session: false }),
     });
 });
 
+// Allows users to add movie to their list of favorites
+app.post('/users/:UserName/Movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Users.findOneAndUpdate({ UserName: req.params.UserName }, {
+    $push: { FavoriteMovies: req.params.MovieID }
+  },
+    { new: true }, //This line makes sure that the updated doc is returned
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      } else {
+        res.json(updatedUser);
+      }
+    });
+});
+
+// Removes movie from favorite list
+app.post('/users/:UserName/Movies/remove/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Users.findOneAndUpdate({ UserName: req.params.UserName }, {
+    $pull: { FavoriteMovies: req.params.MovieID }
+  },
+    { new: true },
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      } else {
+        res.json(updatedUser);
+      }
+    });
+});
+
 //Return the documentation html
 
 app.use(express.static('public'));
