@@ -285,7 +285,7 @@ app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
 });
 
-//log requests at terminal
+//log requests to terminal
 
 app.use(morgan('common'));
 
