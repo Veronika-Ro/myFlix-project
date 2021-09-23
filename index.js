@@ -3,67 +3,44 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const uuid = require('uuid');
 const mongoose = require('mongoose');
-const Models = require('./models.js');
-const Movies = Models.Movie;
-const Users = Models.User;
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
-const app = express();
 
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const app = express();
 
 /*Below is mongoose connection to the local DB
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });*/
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(bodyParser.json());
+
 //the code below allow access for all domains
 app.use(cors());
 
-/*Here we allow only 2 origins to get access to the API
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
-app.use(cors({
-  origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
-      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message ), false);
-    }
-    return callback(null, true);
-  }
-}));*/
 
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-let movies = [
-  {
-    name: 'Harry Potter and the Philosopher\'s Stone',
-    studio: 'Warner Brothers'
-  },
-  {
-    name: 'Lord of the Rings',
-    studio: 'New Line Cinema'
-  },
-  {
-    name: 'Frozen',
-    studio: 'Disney'
-  },
-  {
-    name: 'Star Wars',
-    studio: 'Lucas Films'
-  },
-  {
-    name: 'Avengers',
-    studio: 'Marvel'
-  }
-];
+const Models = require('./models.js');
+const Movies = Models.Movie;
+const Users = Models.User;
 
-// GET requests for all movies
+/**
+  * GET request - loads home page
+  */
 app.get('/', (req, res) => {
   res.send('Welcome to the best Movie Collection!');
 });
 
+
+/**
+ * GET request for ALL movies
+ * @param {string} Title - title of the movie
+ * @param {string} Description - description of the movie 
+ * Object holding data about all movies. 
+ * @returns {array} - Returns array of movie objects.
+ */
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.find()
     .then((movies) => {
@@ -75,7 +52,15 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
     });
 });
 
-// GET requests for a specific movie
+/**
+ * GET request for a specific movie, shows a movie card with title, description, genre and director
+ * @param {string} Title - title of the movie
+ * @param {string} Description - description of the movie 
+ * @param {string} Director.Name - director of the movie
+ * @param {string} Genre.Name - name of the genre of the movie 
+ * @returns {object} - Returns a movie object.
+ */
+
 app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ Title: req.params.Title })
     .then((movie) => {
@@ -87,7 +72,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
     });
 });
 
-// GET requests for all users
+// GET requests for all users. Not required
 
 app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.find()
@@ -100,7 +85,11 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
     });
 });
 
-//Get request for a single user by username
+/**
+ * GET request for single users data
+ * @param {string} UserName 
+ * @returns {Object} Returns a user object.
+ */
 
 app.get('/users/:UserName', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOne({ UserName: req.params.UserName })
@@ -113,7 +102,12 @@ app.get('/users/:UserName', passport.authenticate('jwt', { session: false }), (r
     });
 });
 
-// GET requests for a genre
+/**
+ * GET request for a genre, shows a genre card with name and description
+ * @param {string} Genre.Name - genre's name
+ * @param {string} Genre.Description - genre's description
+ * @returns {object} - Returns a genre object.
+ */
 
 app.get('/movies/genre/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ 'Genre.Name': req.params.Name })
@@ -126,7 +120,14 @@ app.get('/movies/genre/:Name', passport.authenticate('jwt', { session: false }),
     });
 });
 
-// GET requests for a director
+/**
+ * GET request for a director, shows a director card with name, bio, death and birth
+ * @param {string} Director.Name - director's name
+ * @param {string} Director.Bio - director's bio
+ * @param {date} Director.Birth - director's year of birth
+ * @param {date} Director.Death - director's year of death
+ * @returns {object} - Returns a director object.
+ */
 
 app.get('/movies/director/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ 'Director.Name': req.params.Name })
@@ -141,21 +142,16 @@ app.get('/movies/director/:Name', passport.authenticate('jwt', { session: false 
 
 // POST requests 
 
-//Add a user
-/* We’ll expect JSON in this format
-{
-  ID: Integer,
-  Username: String,
-  Password: String,
-  Email: String,
-  Birthday: Date
-}*/
+/**
+ * Post request for users, used for registration of new users
+ * @param {string} UserName 
+ * @param {string} Password
+ * @param {string} Email
+ * @param {date} Birthday
+ * @returns {Object} Returns a user object.
+ */
+
 app.post('/users',
-  // Validation logic here for request
-  //you can either use a chain of methods like .not().isEmpty()
-  //which means "opposite of isEmpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) which means
-  //minimum value of 5 characters are only allowed
   [
     check('UserName', 'Username is required').isLength({ min: 5 }),
     check('UserName', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
@@ -197,17 +193,14 @@ app.post('/users',
       });
   });
 
-// PUT request- update a user's info by username
-/* We’ll expect JSON in this format
-{
-  Username: String,
-  (required)
-  Password: String,
-  (required)
-  Email: String,
-  (required)
-  Birthday: Date
-}*/
+/**
+ * PUT request for users, used to update user info
+ * @param {string} UserName 
+ * @param {string} Password
+ * @param {string} Email
+ * @param {date} Birthday
+ * @returns {Object} Returns a user object.
+ */
 
 app.put('/users/:UserName', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ UserName: req.params.UserName }, {
@@ -230,7 +223,11 @@ app.put('/users/:UserName', passport.authenticate('jwt', { session: false }), (r
     });
 });
 
-// DELETE a user by username 
+/**
+* DELETE request that deletes a USER by name
+* @param {string} UserName
+* @returns Returns a confirmation message.
+*/
 app.delete('/users/:UserName', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndRemove({ UserName: req.params.UserName })
     .then((user) => {
@@ -246,7 +243,13 @@ app.delete('/users/:UserName', passport.authenticate('jwt', { session: false }),
     });
 });
 
-// Allows users to add movie to their list of favorites
+/**
+ * POST request for adding a movie to a user's list of favorites.
+ * @param {string} UserName
+ * @param {string} MovieID
+ * @returns Returns a confirmation message to the console with the updated user object.
+ */
+
 app.post('/users/:UserName/Movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ UserName: req.params.UserName }, {
     $push: { FavoriteMovies: req.params.MovieID }
@@ -262,7 +265,12 @@ app.post('/users/:UserName/Movies/:MovieID', passport.authenticate('jwt', { sess
     });
 });
 
-// Removes movie from favorite list
+/**
+ * Removes a movie from a user's list of favorites.
+ * @param {string} Username
+ * @param {String} MovieID
+ * @returns Returns a confirmation message with the updated user object. 
+ */
 app.delete('/users/:UserName/Movies/remove/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ UserName: req.params.UserName }, {
     $pull: { FavoriteMovies: req.params.MovieID }
