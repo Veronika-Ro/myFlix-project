@@ -26,6 +26,29 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
+let movies = [
+  {
+    name: 'Harry Potter and the Philosopher\'s Stone',
+    studio: 'Warner Brothers'
+  },
+  {
+    name: 'Lord of the Rings',
+    studio: 'New Line Cinema'
+  },
+  {
+    name: 'Frozen',
+    studio: 'Disney'
+  },
+  {
+    name: 'Star Wars',
+    studio: 'Lucas Films'
+  },
+  {
+    name: 'Avengers',
+    studio: 'Marvel'
+  }
+];
+
 /**
   * GET request - loads home page
   */
